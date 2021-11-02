@@ -116,7 +116,7 @@ Classes are designed to minimize the number API calls; each class represents an 
 #### QueryWorkbookViews
 - create QueryWorkbookViews class object
   ```
-  wb_views_obj=tableau_rest.QueryWorkbookViews(VERSION, site_id, token, xmlns, workbook_id, server)
+  wb_views_obj=tableau_rest.QueryWorkbookViews(VERSION, site_id, token, server, xmlns, workbook_id)
   ```
 - variables in QueryWorkbooks class
   ```
