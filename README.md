@@ -44,19 +44,21 @@ Classes are designed to minimize the number API calls; each class represents an 
   site = ''
   ## version of tableau REST API
   VERSION= '3.11'
+  ## namespaces for API calls to the tableau server
+  xmlns = {'t': 'http://tableau.com/api'}
   ```
   ```
   # store token, site_id and user_id to use for other methods
-  token, site_id, my_user_id = tableau_rest.sign_in(server, username, password)
+  token, site_id, my_user_id = tableau_rest.sign_in(server, username, password, VERSION, xmlns, site)
   ```
 - log out
   ```
-  tableau_rest. sign_out(server, VERSION)
+  tableau_rest. sign_out(server, VERSION, xmlns)
   ```
 #### QueryProjects
 - create QueryProjects class object
   ```
-  projects_obj=tableau_rest.QueryProjects(VERSION, site_id, token)
+  projects_obj=tableau_rest.QueryProjects(VERSION, site_id, token, server, xmlns)
   ```
 - variables in QueryProjects class
   ```
@@ -91,7 +93,7 @@ Classes are designed to minimize the number API calls; each class represents an 
 #### QueryWorkbooks
 - create QueryWorkbooks class object
   ```
-  workbook_obj=tableau_rest.QueryWorkbooks(VERSION, site_id, token)
+  workbook_obj=tableau_rest.QueryWorkbooks(VERSION, site_id, token, server, xmlns)
   ```
 - variables in QueryWorkbooks class
   ```
@@ -114,7 +116,7 @@ Classes are designed to minimize the number API calls; each class represents an 
 #### QueryWorkbookViews
 - create QueryWorkbookViews class object
   ```
-  wb_views_obj=tableau_rest.QueryWorkbookViews(VERSION, site_id, token, workbook_id)
+  wb_views_obj=tableau_rest.QueryWorkbookViews(VERSION, site_id, token, xmlns, workbook_id, server)
   ```
 - variables in QueryWorkbooks class
   ```
@@ -135,7 +137,7 @@ Classes are designed to minimize the number API calls; each class represents an 
 #### QueryGroups
 - create QueryGroups class object
   ```
-  groups_obj=tableau_rest.QueryGroups(VERSION, site_id, token)
+  groups_obj=tableau_rest.QueryGroups(VERSION, site_id, token, server, xmlns)
   ```
 - variables in QueryGroups class
   ```
@@ -154,7 +156,7 @@ Classes are designed to minimize the number API calls; each class represents an 
 #### QueryUsers
 - create QueryUsers class object
   ```
-  users_obj=tableau_rest.QueryUsers(VERSION, site_id, token)
+  users_obj=tableau_rest.QueryUsers(VERSION, site_id, token, server, xmlns)
   ```
 - variables in QueryUsers class
   ```
@@ -241,7 +243,7 @@ QueryDefaultPermissions class returns all default project permissions as a neste
         
 - create QueryDefaultPermissions class object
   ```
-  defaultperms_obj=tableau_rest.QueryDefaultPermissions(VERSION, site_id, token, project_id)
+  defaultperms_obj=tableau_rest.QueryDefaultPermissions(VERSION, site_id, token, server, xmlns, project_id)
   ```
 - variables in QueryDefaultPermissions class
   ```
@@ -271,11 +273,11 @@ On the Tableau server, existing permissions must be deleted before you can updat
 - create WriteDefaultPermissions class object
   ```
   # valid permissions_content_type inputs: project, workbook, datasource, flow, metric 
-  defaultperms_obj=tableau_rest.QueryDefaultPermissions(VERSION, site_id, token, permissions_content_type, proj_id)
+  defaultperms_obj=tableau_rest.QueryDefaultPermissions(VERSION, site_id, token, server, xmlns, permissions_content_type, proj_id)
   
   # for example
   project_id = projects_obj.project_id_from_name("project name")
-  writedefaultperms_obj=tableau_rest.WriteDefaultPermissions(VERSION, site_id, token, "workbook", project_id)
+  writedefaultperms_obj=tableau_rest.WriteDefaultPermissions(VERSION, site_id, token, server, xmlns, "workbook", project_id)
   ```
 - methods in WriteDefaultPermissions class
   ```
@@ -307,91 +309,91 @@ On the Tableau server, existing permissions must be deleted before you can updat
 - Returns a list of users for the given group_id
     ```
     group_id = groups_obj.group_id_from_name("my group name")
-    tableau_rest.users_in_group(VERSION, site_id, token, group_id)
+    tableau_rest.users_in_group(VERSION, site_id, token, group_id, server, xmlns)
     ```
 ##### Groups for user
 - Returns a list of groups for the given user_id
     ```
     user_id = users_obj.user_id_from_name("my user name")
-    tableau_rest.groups_for_user(VERSION, site_id, token, user_id)
+    tableau_rest.groups_for_user(VERSION, site_id, token, user_id, server, xmlns)
     ```
 ##### Add group
 - Adds a group to the server for the given group name. By default, min_site_role = 'Viewer'. Returns the group name, group id and minimum site role. Note that results of QueryGroups are cached so a new group may not be immediately queryable 
     ```
-    groupname, groupid, minsiterole = tableau_rest.add_group(VERSION, site_id, token, "my new group name", min_site_role = 'Viewer')
+    groupname, groupid, minsiterole = tableau_rest.add_group(VERSION, site_id, token, server, xmlns, "my new group name", min_site_role = 'Viewer')
     ```
 ##### Add user
 - Adds user to the server for the given name and site role. Returns user name and site role. Note that results of QueryUsers are cached so a new group may not be immediately queryable 
     ```
-    username, siterole = tableau_rest.add_user(VERSION, site_id, token, "my new user name", 'Viewer')
+    username, siterole = tableau_rest.add_user(VERSION, site_id, token, server, xmlns, "my new user name", 'Viewer')
     ```
 ##### Add user to group
 - adds a user to a group for the given user id and group id. Returns user name and user id. Note that results of QueryGroups are cached so a new group may not be immediately queryable 
     ```
     group_id = groups_obj.group_id_from_name("my group name")
     user_id = users_obj.user_id_from_name("my user name")
-    username, userid = tableau_rest.add_user_to_group(VERSION, site_id, token, group_id, user_id)
+    username, userid = tableau_rest.add_user_to_group(VERSION, site_id, token, server, xmlns, group_id, user_id)
     ```
 ##### Create project
 - create a new project on the server given the project name, description. Content permissions types are "LockedToProject", "ManagedByOwner", "LockedToProjectWithoutNested". By default new project content permissions are set to "LockedToProject"
     ```
-    tableau_rest.create_project(VERSION, site_id, token, "Project Name", "this is a description for my project", in_contentpermissions= 'LockedToProject')
+    tableau_rest.create_project(VERSION, site_id, token, server, xmlns, "Project Name", "this is a description for my project", in_contentpermissions= 'LockedToProject')
     ```
 ##### Update project name
 - updates a project name on the server given the project id. Doesn't return anything
    ```
     project_id = projects_obj.project_id_from_name("server project name")
-    tableau_rest.update_project_name(VERSION, site_id, token, project_id, "New name for project")
+    tableau_rest.update_project_name(VERSION, site_id, token, server, xmlns, project_id, "New name for project")
     ```
 ##### Update project content permissions
 - Updates a projects content permissions given the project id. Content permissions types are "LockedToProject", "ManagedByOwner", "LockedToProjectWithoutNested". Function doesn't return anything
    ```
     project_id = projects_obj.project_id_from_name("server project name")
-    tableau_rest.update_project_contentpermissions(VERSION, site_id, token, project_id, 'LockedToProject')
+    tableau_rest.update_project_contentpermissions(VERSION, site_id, token, server, xmlns, project_id, 'LockedToProject')
     ```
 ##### Delete project
 - deletes project on the server for a given project id. Doesn't return anything
    ```
     project_id = projects_obj.project_id_from_name("server project name")
-    tableau_rest.delete_project(VERSION, site_id, token, project_id)
+    tableau_rest.delete_project(VERSION, site_id, token, server, xmlns, project_id)
     ```
 ##### Delete group
 - deletes group on the server for a given group id. Doesn't return anything
     ```
     group_id = groups_obj.group_id_from_name("my group name")
-    tableau_rest.delete_group(VERSION, site_id, token, group_id)
+    tableau_rest.delete_group(VERSION, site_id, token, server, xmlns group_id)
     ```
 ##### Delete user
 - deletes user on the server for a given user id. Doesn't return anything
     ```
     user_id = users_obj.user_id_from_name("my user name")
-    tableau_rest.delete_user(VERSION, site_id, token, user_id)
+    tableau_rest.delete_user(VERSION, site_id, token, server, xmlns user_id)
     ```
 ##### Remove user from group
 - removes user from group for the given user id and group id
     ```
     user_id = users_obj.user_id_from_name("my user name")
     group_id = groups_obj.group_id_from_name("my group name")
-    tableau_rest.remove_user_from_group(VERSION, site_id, token, group_id, user_id)
+    tableau_rest.remove_user_from_group(VERSION, site_id, token, server, xmlns, group_id, user_id)
     ```
 ##### Update user
 - updates a user on the server base on user name, email, password and/or site role, for the given user id
     ```
     user_id = users_obj.user_id_from_name("my user name")
-    tableau_rest.update_user(VERSION, site_id, token, user_id, "new user name", "newemail@email.com", "newverysecurepassword", "Viewer")
+    tableau_rest.update_user(VERSION, site_id, token, server, xmlns user_id, "new user name", "newemail@email.com", "newverysecurepassword", "Viewer")
     ```
 ##### Add user permission to project
 - adds a single user permission to a project (does not set default permissions for workbooks, flows etc) based on project id, user id, capability name ("Write", "Read") and capability mode ("Allow", "Deny"). Returns new capability name, new capability mode and user id
    ```
     project_id = projects_obj.project_id_from_name("server project name")
     user_id = users_obj.user_id_from_name("my user name")
-    tableau_rest.add_user_permission_to_project(VERSION, site_id, token, project_id, user_id, "Write", "Allow")
+    tableau_rest.add_user_permission_to_project(VERSION, site_id, token, server, xmlns, project_id, user_id, "Write", "Allow")
     ```
 ##### Delete user permission from project
 - deletes a single user permission from a project (does not delete default permissions for workbooks, flows etc) based on project id, user id, capability name ("Write", "Read") and capability mode ("Allow", "Deny"). Doesn't return anything
    ```
     project_id = projects_obj.project_id_from_name("server project name")
     user_id = users_obj.user_id_from_name("my user name")
-    tableau_rest.delete_user_permission_from_project(VERSION, site_id, token, project_id, user_id, "Read", "Allow")
+    tableau_rest.delete_user_permission_from_project(VERSION, site_id, token, server, xmlns, project_id, user_id, "Read", "Allow")
     ```
 
