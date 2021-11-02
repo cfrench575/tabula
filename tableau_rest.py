@@ -222,7 +222,7 @@ class QueryWorkbookViews():
     """
     performs single API call that returns xml data for workbooks. xml is parsed using associated methods
     """
-    def __init__(self, VERSION, site_id, token, xmlns, workbook_id, server):
+    def __init__(self, VERSION, site_id, token, server, xmlns, workbook_id):
         self.VERSION = VERSION
         self.site_id = site_id
         self.server = server
