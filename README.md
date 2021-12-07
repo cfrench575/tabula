@@ -1,13 +1,16 @@
 # tabula
 A python package for automating tableau administrative tasks using the tableau REST api
 
-## tableau_rest functionality and examples
+## tabula functionality and examples
+#### tableau rest
 tableau_rest is a python module that uses the requests package to interact with the [Tableau Rest API](https://help.tableau.com/current/api/rest_api/en-us/REST/rest_api_ref.htm). 
 Functionality of the module includes: creating API request URLs, building out XML request elements using the python elementtree package, sending API requests using the python requests package, checking the request response for errors and parsing the response XML to return useful information.
 Classes are designed to minimize the number API calls; each class represents an XML response and each class variable/method parses the XML response. This module may be used for adding/syncing/auditing users and groups, adding/syncing/auditing projects and workbooks, and adding/syncing/auditing default project permissions.
+#### txml
+txml is a python module that uses the elementtree package to interact with the XML code in .twb files. Read functionality of the module includes parsing dashboard names, worksheet names, custom sql queries and calculated fields. Write functionality includes modifying sql queries, inserting group and user filters, changing datasource names, and editing filter types. This module also includes a function that outputs a documentation .html 
 
-
-### Table of Contents
+### Table of Contents 
+tableau_rest:
 1. [Login](#login)
 2. [QueryProjects](#queryprojects)
 3. [QueryWorkbooks](#queryworkbooks)
@@ -32,9 +35,12 @@ Classes are designed to minimize the number API calls; each class represents an 
     - [Update user](#update-user)
     - [Add user permission to project](#add-user-permission-to-project)
     - [Delete user permission from project](#delete-user-permission-from-project)
+txml:
+1. [TXML class](#login)
+2. 9. [Other Functions](#other-functions)
+    - [Users in group](#users-in-group)
 
-
-#### Login
+ #### Login
 - log in to the Tableau REST server and store token, siteid and your userid for use in other methods
   ```
   server= "https://tableau.example.com"
